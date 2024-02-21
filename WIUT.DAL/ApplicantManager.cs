@@ -172,6 +172,8 @@ WHERE ID = @id";
 
         public List<Applicant> GetAll()
         {
+            var allCourses = new CourseManager().GetAll()
+                .ToDictionary(t=>t.Id, t=>t);
             using var connection = Connection;
             var result = new List<Applicant>();
             try
@@ -200,7 +202,7 @@ FROM Applicant";
                         DoB = new DateTime(Convert.ToInt64(reader.GetValue(4))),
                         IsMarried = Convert.ToBoolean(Convert.ToInt32(reader.GetValue(5))),
                         PassportNo = reader.GetValue(6).ToString(),
-                        Course = new CourseManager().GetById(Convert.ToInt32(reader.GetValue(7)))
+                        Course = allCourses[Convert.ToInt32(reader.GetValue(7))]
                     };
                     result.Add(a);
                 }
